@@ -5,6 +5,8 @@ DEGREE_SYBMOL = u"\N{DEGREE SIGN}C"
 
 
 def format_temperature(temp):
+    temperature = str(temp)
+    return f"{temperature}{DEGREE_SYBMOL}"
     """Takes a temperature and returns it in string format with the degrees
         and celcius symbols.
 
@@ -12,41 +14,67 @@ def format_temperature(temp):
         temp: A string representing a temperature.
     Returns:
         A string contain the temperature and "degrees celcius."
-    """
-    return f"{temp}{DEGREE_SYBMOL}"
+    """ 
 
 
 def convert_date(iso_string):
-    """Converts and ISO formatted date into a human readable format.
+    date_obj = datetime.fromisoformat(iso_string)
+    formatted_date = date_obj.strftime('%A %d %B %Y')
+    return formatted_date
+
+iso_date = "2021-07-05T07:00:00+08:00"
+formatted_date = convert_date(iso_date)
+print(formatted_date)
+
+
+"""Converts and ISO formatted date into a human readable format.
 
     Args:
         iso_string: An ISO date string..
     Returns:
         A date formatted like: Weekday Date Month Year e.g. Tuesday 06 July 2021
     """
-    pass
 
 
-def convert_f_to_c(temp_in_farenheit):
-    """Converts an temperature from farenheit to celcius.
+
+def convert_f_to_c(temp_in_f):
+    temp_in_f = float(temp_in_f)
+    temp_in_celsius = (temp_in_f - 32) * 5 / 9
+    return round(temp_in_celsius, 1)
+
+temperature_fahrenheit= "77.0"
+temperature_celsius = convert_f_to_c(temperature_fahrenheit)
+
+print(temperature_celsius)
+"""Converts an temperature from farenheit to celcius.
 
     Args:
         temp_in_farenheit: float representing a temperature.
     Returns:
         A float representing a temperature in degrees celcius, rounded to 1dp.
     """
-    pass
 
 
 def calculate_mean(weather_data):
-    """Calculates the mean value from a list of numbers.
+    if len(weather_data) == 0:
+        return 0.0  # Return 0 if the list is empty
+    temperatures = [float(x) for x in weather_data]
+    total = sum(temperatures)
+    mean = total / len(temperatures)
+    return mean
+
+temperatures = [17, 23, 25, 22, 18]
+mean = calculate_mean(temperatures)
+print(mean)
+
+
+"""Calculates the mean value from a list of numbers.
 
     Args:
         weather_data: a list of numbers.
     Returns:
         A float representing the mean value.
     """
-    pass
 
 
 def load_data_from_csv(csv_file):
