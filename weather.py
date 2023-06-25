@@ -77,48 +77,119 @@ print(mean)
     """
 
 
-def load_data_from_csv(csv_file):
-    """Reads a csv file and stores the data in a list.
+
+def load_data_from_csv(csv_file, delimiter=','):
+    with open(csv_file, 'r') as weather_file:
+        csv_reader = csv.reader(weather_file, delimiter=delimiter)
+        next(csv_reader)  # Skip the header row
+        list_of_csv = []
+        for row in csv_reader:
+            if len(row) >= 3:  # Make sure each row has at least 3 elements
+                date = row[0]
+                min_temp = int(row[1])
+                max_temp = int(row[2])
+                list_of_csv.append([date, min_temp, max_temp])
+    
+    return list_of_csv
+
+csv_file = 'tests/data/example_one.csv'
+delimiter = ' '  # Change the delimiter to the appropriate value if needed
+data = load_data_from_csv(csv_file, delimiter=delimiter)
+print(data)
+
+
+"""Reads a csv file and stores the data in a list.
 
     Args:
         csv_file: a string representing the file path to a csv file.
     Returns:
         A list of lists, where each sublist is a (non-empty) line in the csv file.
     """
-    pass
+
 
 
 def find_min(weather_data):
-    """Calculates the minimum value in a list of numbers.
+    if len(weather_data) == 0:
+        return None  # Return None if the list is empty
+
+    min_value = min(weather_data)
+    min_index = weather_data.index(min_value)
+    min_index = int(min_index)
+    return min_value, min_index
+
+temperatures = [20, 23, 16, 25, 19]
+min_value, min_index = find_min(temperatures)
+print("Minimum value:", min_value)
+print("Position:", min_index)
+
+
+"""Calculates the minimum value in a list of numbers.
 
     Args:
         weather_data: A list of numbers.
     Returns:
         The minium value and it's position in the list.
     """
-    pass
 
 
 def find_max(weather_data):
-    """Calculates the maximum value in a list of numbers.
+    if len(weather_data) == 0:
+        return None, None  # Return None if the list is empty
+
+    max_value = max(weather_data)
+    max_index = weather_data.index(max_value)
+    max_index = int(max_index)
+    return max_value, max_index
+
+temperatures = [20, 24, 18, 21, 23]
+max_value, max_index = find_max(temperatures)
+print("Maximum value:", max_value)
+print("Position:", max_index)
+
+"""Calculates the maximum value in a list of numbers.
 
     Args:
         weather_data: A list of numbers.
     Returns:
         The maximum value and it's position in the list.
     """
-    pass
+
 
 
 def generate_summary(weather_data):
-    """Outputs a summary for the given weather data.
+    num_days = len(weather_data)
+    min_temp = min(temperatures[1] for temperatures in weather_data)
+    max_temp = max(temperatures[2] for temperatures in weather_data)
+    avg_low = sum(temperatures[1] for temperatures in weather_data) / num_days
+    avg_high = sum(temperatures[2] for temperatures in weather_data) / num_days
+
+    summary = f"Weather Summary\n"
+    summary += f"Number of days: {num_days}\n"
+    summary += f"The lowest temperature will be {min_temp:.1f}{DEGREE_SYBMOL}\n"
+    summary += f"The highest temperature will be {max_temp:.1f}{DEGREE_SYBMOL}\n"
+    summary += f"The average low this week is {avg_low:.1f}{DEGREE_SYBMOL}\n"
+    summary += f"The average high this week is {avg_high:.1f}{DEGREE_SYBMOL}\n"
+
+    return summary
+
+temperatures = [
+    ['2021-07-02', 49, 67],
+    ['2021-07-03', 57, 68],
+    ['2021-07-04', 56, 62],
+    ['2021-07-05', 55, 61],
+    ['2021-07-06', 53, 62]
+]
+
+summary = generate_summary(temperatures)
+print(summary)
+
+"""Outputs a summary for the given weather data.
 
     Args:
         weather_data: A list of lists, where each sublist represents a day of weather data.
     Returns:
         A string containing the summary information.
     """
-    pass
 
 
 def generate_daily_summary(weather_data):
