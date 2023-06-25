@@ -107,20 +107,51 @@ print(data)
     """
 
 
-
 def find_min(weather_data):
     if len(weather_data) == 0:
-        return None  # Return None if the list is empty
+        return ()  # Return empty tuple if the list is empty
 
-    min_value = min(weather_data)
-    min_index = weather_data.index(min_value)
-    min_index = int(min_index)
-    return min_value, min_index
+    min_value = float('inf')
+    min_position = None
+    last_duplicate_position = None
+    seen_values = {}
 
-temperatures = [20, 23, 16, 25, 19]
-min_value, min_index = find_min(temperatures)
+    for i in range(len(weather_data)):
+        value = weather_data[i]
+
+        if isinstance(value, str):
+            value = float(value)
+
+        if value <= min_value:
+            min_value = value
+            min_position = i
+
+        seen_values[value] = i
+
+    if min_position is not None:
+        last_duplicate_position = seen_values.get(min_value)
+
+    return (min_value, last_duplicate_position) if min_position is not None else ()
+
+temperatures = [20, 23, 16, 25, 19, 23, 16, 25]
+min_value, last_duplicate_position = find_min(temperatures)
 print("Minimum value:", min_value)
-print("Position:", min_index)
+print("Position of last duplicate value:", last_duplicate_position)
+
+# def find_min(weather_data):
+#     if len(weather_data) == 0:
+#         return None  # Return None if the list is empty
+
+#     min_value = min(weather_data)
+#     min_index = weather_data.index(min_value)
+#     min_index = int(min_index)
+#     return min_value, min_index
+
+# temperatures = [20, 23, 16, 25, 19]
+# min_value, min_index = find_min(temperatures)
+# print("Minimum value:", min_value)
+# print("Position:", min_index)
+
 
 
 """Calculates the minimum value in a list of numbers.
@@ -128,7 +159,7 @@ print("Position:", min_index)
     Args:
         weather_data: A list of numbers.
     Returns:
-        The minium value and it's position in the list.
+        The miniumum value and it's position in the list.
     """
 
 
