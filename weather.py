@@ -165,17 +165,35 @@ print("Position of last duplicate value:", last_duplicate_position)
 
 def find_max(weather_data):
     if len(weather_data) == 0:
-        return None, None  # Return None if the list is empty
+        return ()  # Return empty tuple if the list is empty
 
-    max_value = max(weather_data)
-    max_index = weather_data.index(max_value)
-    max_index = int(max_index)
-    return max_value, max_index
+    max_value = float('-inf')
+    max_position = None
+    last_duplicate_position = None
+    seen_values = {}
 
-temperatures = [20, 24, 18, 21, 23]
-max_value, max_index = find_max(temperatures)
+    for i in range(len(weather_data)):
+        value = weather_data[i]
+
+        if isinstance(value, str):
+            value = float(value)
+
+        if value >= max_value:
+            max_value = value
+            max_position = i
+
+        seen_values[value] = i
+
+    if max_position is not None:
+        last_duplicate_position = seen_values.get(max_value)
+
+    return (max_value, last_duplicate_position) if max_position is not None else ()
+
+temperatures = [20, 23, 16, 25, 19, 23, 16, 25]
+max_value, last_duplicate_position = find_max(temperatures)
 print("Maximum value:", max_value)
-print("Position:", max_index)
+print("Position of last duplicate value:", last_duplicate_position)
+
 
 """Calculates the maximum value in a list of numbers.
 
