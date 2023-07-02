@@ -190,148 +190,76 @@ print("Position of last duplicate value:", last_duplicate_position)
         The maximum value and it's position in the list.
     """
 
+from datetime import datetime
 
-
-# def generate_summary(weather_data):
-
-# def convert_date(iso_string):
-#     date_obj = datetime.fromisoformat(iso_string)
-#     formatted_date1 = date_obj.strftime('%A %d %B %Y')
-#     return formatted_date1
-
-# def find_min1(weather_data):
-#     if len(weather_data) == 0:
-#         return None, None
-
-#     min_value = float('inf')
-#     min_date1 = None
-
-#     for data in weather_data:
-#         if data[1] <= min_value:
-#             min_value = data[1]
-#             min_date1 = data[0]
-
-#     return min_value, min_date1
-
-# def find_max1(weather_data):
-#     if len(weather_data) == 0:
-#         return None, None
-
-#     max_value = float('-inf')
-#     max_date1 = None
-
-#     for data in weather_data:
-#         if data[2] >= max_value:
-#             max_value = data[2]
-#             max_date1 = data[0]
-
-#     return max_value, max_date1
-
-# def generate_summary(weather_data):
-#     num_days = len(weather_data)
-#     min_temp, min_date1 = find_min1(weather_data)
-#     max_temp, max_date1 = find_max1(weather_data)
-#     formatted_date1 = convert_date(min_date1)
-
-#     avg_low = sum(day[1] for day in weather_data) / num_days
-#     avg_high = sum(day[2] for day in weather_data) / num_days
-
-#     summary = f"{num_days} Day Overview\n"
-#     summary += f"The lowest temperature will be {min_temp:.1f}°C, and will occur on {formatted_date1}.\n"
-#     summary += f"The highest temperature will be {max_temp:.1f}°C, and will occur on {convert_date(max_date1)}.\n"
-#     summary += f"The average low this week is {avg_low:.1f}°C.\n"
-#     summary += f"The average high this week is {avg_high:.1f}°C.\n"
-
-#     return summary
-
-
-# def convert_f_to_c(temp_in_f):
-#     temp_in_f = float(temp_in_f)
-#     temp_in_celsius = (temp_in_f - 32) * 5 / 9
-#     return round(temp_in_celsius, 1)
-
-# temp_in_f = [
-#     ["2021-07-02T07:00:00+08:00", 49, 67],
-#     ["2021-07-03T07:00:00+08:00", 57, 68],
-#     ["2021-07-04T07:00:00+08:00", 56, 62],
-#     ["2021-07-05T07:00:00+08:00", 55, 61],
-#     ["2021-07-06T07:00:00+08:00", 53, 62]
-# ]
-
-# temp_in_celsius = [[data[0], convert_f_to_c(data[1]), convert_f_to_c(data[2])] for data in temp_in_f]
-
-# summary = generate_summary(temp_in_celsius)
-# print(summary)
-
-
-def convert_date(iso_string):
-    date_obj = datetime.fromisoformat(iso_string[:10])
-    formatted_date1 = date_obj.strftime('%A %d %B %Y')
-    return formatted_date1
-
-def find_min1(weather_data):
+def find_min_max_temperatures(weather_data):
     if len(weather_data) == 0:
-        return None, None
+        return (), ()
 
     min_value = float('inf')
-    min_date1 = None
-
-    for data in weather_data:
-        if data[1] <= min_value:
-            min_value = data[1]
-            min_date1 = data[0]
-
-    return min_value, min_date1
-
-def find_max1(weather_data):
-    if len(weather_data) == 0:
-        return None, None
-
+    min_position = None
     max_value = float('-inf')
-    max_date1 = None
+    max_position = None
+    last_duplicate_position = None
+    seen_values = {}
 
-    for data in weather_data:
-        if data[2] >= max_value:
-            max_value = data[2]
-            max_date1 = data[0]
+    for i in range(len(weather_data)):
+        temp_in_celsius = weather_data[i][1]
 
-    return max_value, max_date1
+        if temp_in_celsius <= min_value:
+            min_value = temp_in_celsius
+            min_position = i
+
+        if temp_in_celsius >= max_value:
+            max_value = temp_in_celsius
+            max_position = i
+
+        seen_values[temp_in_celsius] = i
+
+    if min_position is not None:
+        last_duplicate_position = seen_values.get(min_value)
+
+    return (min_value, last_duplicate_position), (max_value, max_position)
+
+def convert_date(iso_string):
+    date_obj = datetime.fromisoformat(iso_string)
+    formatted_date = date_obj.strftime('%A %d %B %Y')
+    return formatted_date
 
 def generate_summary(weather_data):
     num_days = len(weather_data)
-    min_temp, min_date1 = find_min1(weather_data)
-    max_temp, max_date1 = find_max1(weather_data)
-    formatted_date1 = convert_date(min_date1)
+    (min_temp, min_date_position), (max_temp, max_date_position) = find_min_max_temperatures(weather_data)
+    formatted_min_date = convert_date(weather_data[min_date_position][0])
+    formatted_max_date = convert_date(weather_data[max_date_position][0])
 
     avg_low = sum(day[1] for day in weather_data) / num_days
     avg_high = sum(day[2] for day in weather_data) / num_days
 
     summary = f"{num_days} Day Overview\n"
-    summary += f"The lowest temperature will be {min_temp:.1f}°C, and will occur on {formatted_date1}.\n"
-    summary += f"The highest temperature will be {max_temp:.1f}°C, and will occur on {convert_date(max_date1)}.\n"
+    summary += f"The lowest temperature will be {min_temp:.1f}°C, and will occur on {formatted_min_date}.\n"
+    summary += f"The highest temperature will be {max_temp:.1f}°C, and will occur on {formatted_max_date}.\n"
     summary += f"The average low this week is {avg_low:.1f}°C.\n"
     summary += f"The average high this week is {avg_high:.1f}°C.\n"
 
     return summary
 
-
-def convert_f_to_c(temp_in_f):
-    temp_in_f = float(temp_in_f)
+def convert_f_to_c2(temp_in_f):
     temp_in_celsius = (temp_in_f - 32) * 5 / 9
     return round(temp_in_celsius, 1)
 
-temp_in_f = [
-    ["2021-07-02T07:00:00+08:00", 49, 67],
-    ["2021-07-03T07:00:00+08:00", 57, 68],
-    ["2021-07-04T07:00:00+08:00", 56, 62],
-    ["2021-07-05T07:00:00+08:00", 55, 61],
-    ["2021-07-06T07:00:00+08:00", 53, 62]
+
+temperature_fahrenheit1 = [
+    ['2021-07-02T07:00:00+08:00', convert_f_to_c2(49), convert_f_to_c2(67)],
+    ['2021-07-03T07:00:00+08:00', convert_f_to_c2(57), convert_f_to_c2(68)],
+    ['2021-07-04T07:00:00+08:00', convert_f_to_c2(56), convert_f_to_c2(62)],
+    ['2021-07-05T07:00:00+08:00', convert_f_to_c2(55), convert_f_to_c2(61)],
+    ['2021-07-06T07:00:00+08:00', convert_f_to_c2(53), convert_f_to_c2(62)]
 ]
 
-temp_in_celsius = [[data[0], convert_f_to_c(data[1]), convert_f_to_c(data[2])] for data in temp_in_f]
-
-summary = generate_summary(temp_in_celsius)
+summary = generate_summary(temperature_fahrenheit1)
 print(summary)
+
+
 
 
 """Outputs a summary for the given weather data.
@@ -343,35 +271,7 @@ print(summary)
     """
 
 
-# def generate_daily_summary(weather_data):
 
-
-# def convert_date(iso_string):
-#     date_obj = datetime.fromisoformat(iso_string)
-#     formatted_date2 = date_obj.strftime('%A %d %B %Y')
-#     return formatted_date2
-
-# def generate_daily_summary(weather_data):
-#     summary = ""
-#     for data in weather_data:
-#         date = convert_date(data[0])
-#         min_temp = data[1]
-#         max_temp = data[2]
-#         summary += f"---- {date} ----\n"
-#         summary += f"  Minimum Temperature: {min_temp:.1f}°C\n"
-#         summary += f"  Maximum Temperature: {max_temp:.1f}°C\n\n"
-#     return summary
-
-# data = [
-#     ['2021-07-02', 9.4, 19.4],
-#     ['2021-07-03', 13.9, 20.0],
-#     ['2021-07-04', 13.3, 16.7],
-#     ['2021-07-05', 12.8, 16.1],
-#     ['2021-07-06', 11.7, 16.7]
-# ]
-
-# summary = generate_daily_summary(data)
-# print(summary)
 
 from datetime import datetime
 
