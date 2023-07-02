@@ -375,9 +375,9 @@ print(summary)
 
 from datetime import datetime
 
-def convert_f_to_c(temp_in_f):
-    temp_in_celsius = (temp_in_f - 32) * 5 / 9
-    return round(temp_in_celsius, 1)
+def convert_f_to_c1(temp_in_f1):
+    temp_in_celsius1 = (temp_in_f1 - 32) * 5 / 9
+    return round(temp_in_celsius1, 1)
 
 def convert_date(iso_string):
     date_obj = datetime.fromisoformat(iso_string)
@@ -388,8 +388,8 @@ def generate_daily_summary(weather_data):
     summary = ""
     for data in weather_data:
         date = data[0][:10]  # Extract the date part from the ISO8601 string
-        min_temp = convert_f_to_c(data[1])
-        max_temp = convert_f_to_c(data[2])
+        min_temp = convert_f_to_c1(data[1])
+        max_temp = convert_f_to_c1(data[2])
         summary += f"---- {convert_date(date)} ----\n"
         summary += f"  Minimum Temperature: {min_temp:.1f}°C\n"
         summary += f"  Maximum Temperature: {max_temp:.1f}°C\n\n"
